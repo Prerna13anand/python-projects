@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Montserrat', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 40px 32px 32px 32px;
+            max-width: 440px;
+            width: 100%;
+            animation: fadeIn 1.2s cubic-bezier(.39,.575,.56,1.000);
+            box-sizing: border-box;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-size: 2rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        label {
+            color: #fff;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-size: 1rem;
+            font-family: inherit;
+            margin-bottom: 18px;
+            background: rgba(255,255,255,0.7);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            resize: none;
+            transition: box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        textarea:focus {
+            outline: none;
+            box-shadow: 0 4px 16px rgba(102,126,234,0.25);
+        }
+        .btn {
+            width: 100%;
+            padding: 14px 0;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.15);
+            transition: background 0.2s, transform 0.1s;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .result {
+            margin-top: 24px;
+            padding: 24px 18px 24px 18px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.88);
+            box-shadow: 0 2px 12px rgba(102,126,234,0.10);
+            animation: popIn 0.7s cubic-bezier(.39,.575,.56,1.000);
+            box-sizing: border-box;
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .sentiment-label {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #764ba2;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .score {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .emoji {
+            font-size: 2.2rem;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @media (max-width: 600px) {
+            .glass { padding: 24px 8px 16px 8px; max-width: 98vw; }
+            h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass">
+        <h2>Sentiment Analysis</h2>
+        <form method="POST" autocomplete="off">
+            <label for="text">Type your sentence:</label>
+            <textarea id="text" name="text" required placeholder="How are you feeling today?">{{ user_text }}</textarea>
+            <button class="btn" type="submit">Analyze Sentiment</button>
+        </form>
+        {% if sentiment %}
+        <div class="result">
+            <span class="sentiment-label">
+                {% if sentiment == 'Positive' %}
+                    <span class="emoji">😊</span>
+                {% elif sentiment == 'Negative' %}
+                    <span class="emoji">😞</span>
+                {% else %}
+                    <span class="emoji">😐</span>
+                {% endif %}
+                {{ sentiment }}
+            </span>
+            <div class="score"><strong>Polarity:</strong> {{ polarity }}</div>
+            <div class="score"><strong>Subjectivity:</strong> {{ subjectivity }}</div>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        // Animate result on submit
+        const form = document.querySelector('form');
+        form && form.addEventListener('submit', function() {
+            const result = document.querySelector('.result');
+            if(result) {
+                result.style.animation = 'none';
+                void result.offsetWidth;
+                result.style.animation = null;
+            }
+        });
+    </script>
+</body>
+</html>
